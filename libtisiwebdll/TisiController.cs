@@ -22,19 +22,19 @@ namespace mkcs.libtisiweb
 		}
 
 		//protected Dictionary<string, Dictionary<string, string>> fragmentRepository = new Dictionary<string, Dictionary<string, string>>();
-		protected List<Fragment> fragmentRepository = new List<Fragment> ();
+		protected Dictionary<string, Fragment> fragmentRepository = new Dictionary<string, Fragment>();
 
 		protected string GetFragmentValue(string fragmentName, string subset) {
 			if (fragmentRepository.ContainsKey(fragmentName)) {
-				Dictionary<string, string> fragment = fragmentRepository[fragmentName];
-				if (!fragment.ContainsKey(subset) && subset.IndexOf("-") > 0) {
+				IFragment fragment = fragmentRepository[fragmentName];
+				if (!fragment.ContainsSubset(subset) && subset.IndexOf("-") > 0) {
 					subset = subset.Substring(0, subset.IndexOf("-"));
 				}
-				if (!fragment.ContainsKey(subset)) {
+				if (!fragment.ContainsSubset(subset)) {
 					subset = "en";
 				}
-				if (fragment.ContainsKey(subset)) {
-					return fragment[subset];
+				if (fragment.ContainsSubset(subset)) {
+					return fragment.Subsets[subset];
 				}
 				else {
 					return "#SUBSET_NOT_FOUND("+ fragmentName + "," + subset + ")";

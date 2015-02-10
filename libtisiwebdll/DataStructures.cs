@@ -8,6 +8,7 @@ namespace mkcs.libtisiweb
 		string Name { get; set; }
 		FragmentSubsets Subsets { get; set; }
 		void AddSubset (string subset, string value);
+		bool ContainsSubset(string subset);
 	}
 
 	public class Fragment : IFragment
@@ -26,6 +27,11 @@ namespace mkcs.libtisiweb
 			Subsets.Add (subset, value);
 		}
 
+		public bool ContainsSubset(string subset)
+		{
+			return Subsets.ContainsKey (subset);
+		}
+
 		public override string ToString ()
 		{
 			return string.Format("[Fragment: Name={0}, Subsets={1}]", Name, Subsets.Count);
@@ -41,11 +47,11 @@ namespace mkcs.libtisiweb
 			this.OwningFragment = OwningFragment;
 		}
 
-		public Fragment OwningFragment { get; private set; }
+		public IFragment OwningFragment { get; private set; }
 
 		public override string ToString ()
 		{
-			return string.Format ("[FragmentSubsets]{0}/{1}", (OwningFragment == null ? "" : OwningFragment), this.Count);
+			return string.Format ("[FragmentSubsets]{0}/{1}", (OwningFragment == null ? "" : OwningFragment.ToString()), this.Count);
 		}
 	}
 }
