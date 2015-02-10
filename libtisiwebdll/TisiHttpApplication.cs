@@ -8,9 +8,15 @@ namespace mkcs.libtisiweb
 	{
 		public TisiHttpApplication ()
 		{
+			FallbackSubset = "en";
 		}
 
 		private static string selectedSubset = "";
+
+		public string FallbackSubset {
+			get;
+			set;
+		}
 
 		public static string GetSelectedSubset()
 		{
@@ -26,7 +32,7 @@ namespace mkcs.libtisiweb
 				}
 			}
 			if (string.IsNullOrEmpty (selectedSubset)) {
-				selectedSubset = "en";
+				selectedSubset = FallbackSubset;
 			}
 		}
 	}
