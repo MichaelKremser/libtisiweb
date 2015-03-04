@@ -23,15 +23,15 @@ namespace mkcs.libtisiweb
 		/// <summary>
 		/// The selected subset that will be used to retrieve texts.
 		/// </summary>
-		protected static string selectedSubset = "";
+		protected static string detectedSubset = "";
 
 		/// <summary>
 		/// Gets the currently selected subset.
 		/// </summary>
 		/// <returns>The selected subset.</returns>
-		public static string GetSelectedSubset()
+		public static string GetDetectedSubset()
 		{
-			return selectedSubset;
+			return detectedSubset;
 		}
 
 		/// <summary>
@@ -42,11 +42,11 @@ namespace mkcs.libtisiweb
 			if (HttpContext.Current != null && HttpContext.Current.Request != null) {
 				HttpRequest Request = HttpContext.Current.Request;
 				if (Request.UserLanguages != null && Request.UserLanguages.Length > 0) {
-					selectedSubset = Request.UserLanguages[0];
+					detectedSubset = Request.UserLanguages[0];
 				}
 			}
-			if (string.IsNullOrEmpty (selectedSubset)) {
-				selectedSubset = FallbackSubset;
+			if (string.IsNullOrEmpty (detectedSubset)) {
+				detectedSubset = FallbackSubset;
 			}
 		}
 	}

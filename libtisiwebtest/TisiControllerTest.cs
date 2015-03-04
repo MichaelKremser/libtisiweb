@@ -4,7 +4,7 @@ using System;
 namespace libtisiwebtest
 {
 	[TestFixture()]
-	public class Test
+	public class TisiControllerTest
 	{
 		[Test()]
 		public void TestCase ()

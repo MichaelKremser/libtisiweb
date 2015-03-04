@@ -35,7 +35,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test.cs" />
+    <Compile Include="Fragment.cs" />
+    <Compile Include="TisiControllerTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\libtisiwebdll\libtisiwebdll.csproj">
+      <Project>{CCB45792-A27C-49FC-A022-24F4851138E9}</Project>
+      <Name>libtisiwebdll</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
