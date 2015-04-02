@@ -11,8 +11,7 @@ using System.Xml;
  * License: MIT
 */
 
-namespace mkcs.libtisiweb
-{
+namespace mkcs.libtisiweb {
 	/*
 	 * Base class for controller. Provides methods for handling fragment stores.
 	*/
@@ -23,15 +22,24 @@ namespace mkcs.libtisiweb
 		protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
 		protected string subset, pageTitle, pageShortTitle, pageLongTitle;
 
+		private string _FragmentRepositoryXmlFile;
 		/// <summary>
 		/// Gets or sets the fragment repository XML file. If this property is set, the repository will be read immediately.
 		/// </summary>
 		/// <value>The fragment repository XML file.</value>
 		public string FragmentRepositoryXmlFile {
-			get;
+			get {
+				return _FragmentRepositoryXmlFile;
+			}
 			set {
 				if (!string.IsNullOrEmpty(value) && System.IO.File.Exists(value)) {
-					ReadXmlRepository();
+					var doc = new XmlDocument();
+					doc.Load(value);
+					ReadXmlRepository(doc);
+					_FragmentRepositoryXmlFile = value;
+				}
+				else {
+					throw new ArgumentException("FragmentRepositoryXmlFile must not be null and the path set must be accessible.");
 				}
 			}
 		}
@@ -50,9 +58,7 @@ namespace mkcs.libtisiweb
 			return GetURIParameter("subset");
 		}
 
-		public void ReadXmlRepository() {
-			var doc = new XmlDocument();
-			doc.Load(FragmentRepositoryXmlFile);
+		public void ReadXmlRepository(XmlDocument doc) {
 			ProcessRepositoryNodes(doc.SelectNodes("/pages/page"));
 		}
 
@@ -98,7 +104,7 @@ namespace mkcs.libtisiweb
 			pageLongTitle = GetFragmentValue(action + ".longtitle", subset);
 		}
 
-		protected void SetFragmentValue(string fragmentName, string subset, string fragmentValue) {
+		public void SetFragmentValue(string fragmentName, string subset, string fragmentValue) {
 			IFragment fragment;
 			if (fragmentRepository.ContainsKey(fragmentName)) {
 				fragment = fragmentRepository[fragmentName];
@@ -115,14 +121,14 @@ namespace mkcs.libtisiweb
 			}
 		}
 
-		protected string GetFragmentValue(string fragmentName, string subset) {
+		public string GetFragmentValue(string fragmentName, string subset) {
 			if (fragmentRepository.ContainsKey(fragmentName)) {
 				IFragment fragment = fragmentRepository[fragmentName];
 				if (!fragment.ContainsSubset(subset) && subset.IndexOf("-") > 0) {
 					subset = subset.Substring(0, subset.IndexOf("-"));
 				}
 				if (!fragment.ContainsSubset(subset)) {
-					subset = "en";
+					subset = DefaultSubset;
 				}
 				if (fragment.ContainsSubset(subset)) {
 					return fragment.Subsets[subset];
