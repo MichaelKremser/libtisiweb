@@ -18,21 +18,37 @@ namespace mkcs.libtisiweb
 	*/
 	public abstract class TisiController : Controller {
 		public TisiController () {
-			if (!string.IsNullOrEmpty(FragmentRepositoryXmlFile) && System.IO.File.Exists(FragmentRepositoryXmlFile)) {
-				ReadXmlRepository();
+		}
+		
+		protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
+		protected string subset, pageTitle, pageShortTitle, pageLongTitle;
+
+		/// <summary>
+		/// Gets or sets the fragment repository XML file. If this property is set, the repository will be read immediately.
+		/// </summary>
+		/// <value>The fragment repository XML file.</value>
+		public string FragmentRepositoryXmlFile {
+			get;
+			set {
+				if (!string.IsNullOrEmpty(value) && System.IO.File.Exists(value)) {
+					ReadXmlRepository();
+				}
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the default subset that is used in case the desired subset is not available for a given fragment.
+		/// </summary>
+		/// <value>The default subset.</value>
+		public string DefaultSubset { get; set; }
+		
 		public string GetURIParameter(string parameter) {
 			return this.ControllerContext.RouteData.GetRequiredString(parameter);
 		}
 
-		public string GetSubsetId()
-		{
+		public string GetSubsetId() {
 			return GetURIParameter("subset");
 		}
-
-		public string FragmentRepositoryXmlFile = "";
 
 		public void ReadXmlRepository() {
 			var doc = new XmlDocument();
@@ -57,9 +73,6 @@ namespace mkcs.libtisiweb
 			}
 		}
 
-		//protected Dictionary<string, Dictionary<string, string>> fragmentRepository = new Dictionary<string, Dictionary<string, string>>();
-		protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
-
 		/// <summary>
 		/// Adds the fragment specified to the repository, if it doesn't exist yet, otherwise updates the fragment in the repository.
 		/// </summary>
@@ -75,8 +88,6 @@ namespace mkcs.libtisiweb
 				return true;
 			}
 		}
-
-		protected string subset, pageTitle, pageShortTitle, pageLongTitle;
 
 		protected override void Initialize (System.Web.Routing.RequestContext requestContext) {
 			base.Initialize (requestContext);
