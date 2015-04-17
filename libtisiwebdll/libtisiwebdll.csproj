@@ -41,7 +41,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TisiController.cs" />
     <Compile Include="TisiHttpApplication.cs" />
-    <Compile Include="DataStructures.cs" />
+    <Compile Include="Fragment.cs" />
+    <Compile Include="FragmentSubsets.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

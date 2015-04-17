@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Xml;
@@ -17,6 +18,7 @@ namespace mkcs.libtisiweb {
 	*/
 	public abstract class TisiController : Controller {
 		public TisiController () {
+			DefaultSubset = "";
 		}
 		
 		protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
@@ -65,14 +67,24 @@ namespace mkcs.libtisiweb {
 		public void ProcessRepositoryNodes(XmlNodeList nodes) {
 			if (nodes == null || nodes.Count == 0)
 				return;
+			Trace.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
 			string pageName = "", fragmentName = "", subsetId = "";
 			foreach (XmlNode node in nodes) {
 				pageName = node.Attributes["name"].Value;
 				foreach (XmlNode nodeFragment in node.SelectNodes("fragment")) {
 					fragmentName = nodeFragment.Attributes["name"].Value;
-					foreach (XmlNode nodeSubset in nodeFragment.SelectNodes("subset")) {
-						subsetId = nodeSubset.Attributes["lang"].Value;
-						SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
+					XmlNodeList subsetNodes = nodeFragment.SelectNodes("subset");
+					// Does this fragment have subsets?
+					if (subsetNodes.Count > 0) {
+						// Yes, so let's add every subset and its text
+						foreach (XmlNode nodeSubset in subsetNodes) {
+							subsetId = nodeSubset.Attributes["lang"].Value;
+							SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
+						}
+					}
+					else {
+						// No, so add the fragment's node text
+						SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
 					}
 				}
 				ProcessRepositoryNodes(node.SelectNodes("page"));
@@ -87,10 +99,12 @@ namespace mkcs.libtisiweb {
 		protected bool AddFragment(IFragment fragment) {
 			if (fragmentRepository.ContainsKey(fragment.Name)) {
 				fragmentRepository[fragment.Name] = fragment;
+				Trace.WriteLine("AddFragment: Updated " + fragment.Name);
 				return false;
 			}
 			else {
 				fragmentRepository.Add(fragment.Name, fragment);
+				Trace.WriteLine("AddFragment: Inserted " + fragment.Name);
 				return true;
 			}
 		}
@@ -104,7 +118,7 @@ namespace mkcs.libtisiweb {
 			pageLongTitle = GetFragmentValue(action + ".longtitle", subset);
 		}
 
-		public void SetFragmentValue(string fragmentName, string subset, string fragmentValue) {
+		public void SetFragmentValue(string fragmentName, string fragmentSubset, string fragmentValue) {
 			IFragment fragment;
 			if (fragmentRepository.ContainsKey(fragmentName)) {
 				fragment = fragmentRepository[fragmentName];
@@ -113,31 +127,45 @@ namespace mkcs.libtisiweb {
 				fragment = new Fragment();
 				fragmentRepository.Add(fragmentName, fragment);
 			}
-			if (fragment.ContainsSubset(subset)) {
-				fragment.Subsets[subset] = fragmentValue;
+			if (fragment.ContainsSubset(fragmentSubset)) {
+				fragment.Subsets[fragmentSubset] = fragmentValue;
 			}
 			else {
-				fragment.AddSubset(subset, fragmentValue);
+				fragment.AddSubset(fragmentSubset, fragmentValue);
 			}
 		}
 
-		public string GetFragmentValue(string fragmentName, string subset) {
+		public string GetFragmentValue(string fragmentName, string fragmentSubset) {
+			// Is the requested fragment available?
 			if (fragmentRepository.ContainsKey(fragmentName)) {
 				IFragment fragment = fragmentRepository[fragmentName];
-				if (!fragment.ContainsSubset(subset) && subset.IndexOf("-") > 0) {
-					subset = subset.Substring(0, subset.IndexOf("-"));
-				}
-				if (!fragment.ContainsSubset(subset)) {
-					subset = DefaultSubset;
-				}
-				if (fragment.ContainsSubset(subset)) {
-					return fragment.Subsets[subset];
+				// Check if the fragment contains any subset rather then the "undefined" subset at all
+				if (fragment.ContainsSubset("")) {
+					// No, it doesn't, so reset the requested subset to an empty string
+					fragmentSubset = "";
 				}
 				else {
-					return "#SUBSET_NOT_FOUND("+ fragmentName + "," + subset + ")";
+					// Yes, it does, so try to find an appropriate subset
+					// If the requested subset is for instance "en-us", but that's not available, try with "en" only
+					if (!fragment.ContainsSubset(fragmentSubset) && fragmentSubset.IndexOf("-") > 0) {
+						fragmentSubset = fragmentSubset.Substring(0, fragmentSubset.IndexOf("-"));
+					}
+					// If the requested subset is not available, fall back to default subset
+					if (!fragment.ContainsSubset(fragmentSubset)) {
+						fragmentSubset = DefaultSubset;
+					}
+				}
+				// Return the requested subset if availble
+				if (fragment.ContainsSubset(fragmentSubset)) {
+					return fragment.Subsets[fragmentSubset];
+				}
+				else {
+					// Otherwise return a magic string that signalises a problem
+					return "#SUBSET_NOT_FOUND("+ fragmentName + "," + fragmentSubset + ")";
 				}
 			}
 			else {
+				// Requested fragment is not available, so return a magic string that signalises a problem
 				return "#FRAGMENT_NOT_FOUND(" + fragmentName + ")";
 			}
 		}
