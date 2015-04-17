@@ -39,7 +39,7 @@ namespace mkcs.libtisiweb {
 					var doc = new XmlDocument();
 					doc.Load(value);
 					//ReadXmlRepository(doc);
-					XmlFragmentRepositoryReader xmlFileReader = new XmlFragmentRepositoryReader();
+					var xmlFileReader = new XmlFragmentRepositoryReader();
 					xmlFileReader.ReadFragmentRepository(doc, fragmentRepository);
 					_FragmentRepositoryXmlFile = value;
 				}
@@ -63,54 +63,11 @@ namespace mkcs.libtisiweb {
 			return GetURIParameter("subset");
 		}
 
-//		public void ReadXmlRepository(XmlDocument doc) {
-//			ProcessRepositoryNodes(doc.SelectNodes("/pages/page"));
-//		}
-
-//		public void ProcessRepositoryNodes(XmlNodeList nodes) {
-//			if (nodes == null || nodes.Count == 0)
-//				return;
-//			Trace.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
-//			string pageName = "", fragmentName = "", subsetId = "";
-//			foreach (XmlNode node in nodes) {
-//				pageName = node.Attributes["name"].Value;
-//				foreach (XmlNode nodeFragment in node.SelectNodes("fragment")) {
-//					fragmentName = nodeFragment.Attributes["name"].Value;
-//					XmlNodeList subsetNodes = nodeFragment.SelectNodes("subset");
-//					// Does this fragment have subsets?
-//					if (subsetNodes.Count > 0) {
-//						// Yes, so let's add every subset and its text
-//						foreach (XmlNode nodeSubset in subsetNodes) {
-//							subsetId = nodeSubset.Attributes["lang"].Value;
-//							fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
-//						}
-//					}
-//					else {
-//						// No, so add the fragment's node text
-//						fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
-//					}
-//				}
-//				ProcessRepositoryNodes(node.SelectNodes("page"));
-//			}
-//		}
-
 		/// <summary>
 		/// Adds the fragment specified to the repository, if it doesn't exist yet, otherwise updates the fragment in the repository.
 		/// </summary>
 		/// <returns><c>true</c>, if fragment was added, <c>false</c> if fragment was updated.</returns>
 		/// <param name="fragment">The fragment that should be added or updated.</param>
-//		protected bool AddFragment(IFragment fragment) {
-//			if (fragmentRepository.ContainsKey(fragment.Name)) {
-//				fragmentRepository[fragment.Name] = fragment;
-//				Trace.WriteLine("AddFragment: Updated " + fragment.Name);
-//				return false;
-//			}
-//			else {
-//				fragmentRepository.Add(fragment.Name, fragment);
-//				Trace.WriteLine("AddFragment: Inserted " + fragment.Name);
-//				return true;
-//			}
-//		}
 
 		protected override void Initialize (System.Web.Routing.RequestContext requestContext) {
 			base.Initialize (requestContext);
