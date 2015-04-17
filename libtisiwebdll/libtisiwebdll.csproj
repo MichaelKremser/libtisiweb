@@ -44,6 +44,8 @@
     <Compile Include="Fragment.cs" />
     <Compile Include="FragmentSubsets.cs" />
     <Compile Include="FragmentRepository.cs" />
+    <Compile Include="IFragmentRepositoryReader.cs" />
+    <Compile Include="XmlFragmentRepositoryReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

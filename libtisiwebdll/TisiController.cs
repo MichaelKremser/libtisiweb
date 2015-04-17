@@ -18,11 +18,11 @@ namespace mkcs.libtisiweb {
 	*/
 	public abstract class TisiController : Controller {
 		public TisiController () {
-			DefaultSubset = "";
+			fragmentRepository.DefaultSubset = DefaultSubset = "";
 		}
 		
 		//protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
-		protected FragmentRepository fragmentRepository = new FragmentRepository();
+		protected IFragmentRepository fragmentRepository = new FragmentRepository();
 		protected string subset, pageTitle, pageShortTitle, pageLongTitle;
 
 		private string _FragmentRepositoryXmlFile;
@@ -38,7 +38,9 @@ namespace mkcs.libtisiweb {
 				if (!string.IsNullOrEmpty(value) && System.IO.File.Exists(value)) {
 					var doc = new XmlDocument();
 					doc.Load(value);
-					ReadXmlRepository(doc);
+					//ReadXmlRepository(doc);
+					XmlFragmentRepositoryReader xmlFileReader = new XmlFragmentRepositoryReader();
+					xmlFileReader.ReadFragmentRepository(doc, fragmentRepository);
 					_FragmentRepositoryXmlFile = value;
 				}
 				else {
@@ -61,36 +63,36 @@ namespace mkcs.libtisiweb {
 			return GetURIParameter("subset");
 		}
 
-		public void ReadXmlRepository(XmlDocument doc) {
-			ProcessRepositoryNodes(doc.SelectNodes("/pages/page"));
-		}
+//		public void ReadXmlRepository(XmlDocument doc) {
+//			ProcessRepositoryNodes(doc.SelectNodes("/pages/page"));
+//		}
 
-		public void ProcessRepositoryNodes(XmlNodeList nodes) {
-			if (nodes == null || nodes.Count == 0)
-				return;
-			Trace.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
-			string pageName = "", fragmentName = "", subsetId = "";
-			foreach (XmlNode node in nodes) {
-				pageName = node.Attributes["name"].Value;
-				foreach (XmlNode nodeFragment in node.SelectNodes("fragment")) {
-					fragmentName = nodeFragment.Attributes["name"].Value;
-					XmlNodeList subsetNodes = nodeFragment.SelectNodes("subset");
-					// Does this fragment have subsets?
-					if (subsetNodes.Count > 0) {
-						// Yes, so let's add every subset and its text
-						foreach (XmlNode nodeSubset in subsetNodes) {
-							subsetId = nodeSubset.Attributes["lang"].Value;
-							fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
-						}
-					}
-					else {
-						// No, so add the fragment's node text
-						fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
-					}
-				}
-				ProcessRepositoryNodes(node.SelectNodes("page"));
-			}
-		}
+//		public void ProcessRepositoryNodes(XmlNodeList nodes) {
+//			if (nodes == null || nodes.Count == 0)
+//				return;
+//			Trace.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
+//			string pageName = "", fragmentName = "", subsetId = "";
+//			foreach (XmlNode node in nodes) {
+//				pageName = node.Attributes["name"].Value;
+//				foreach (XmlNode nodeFragment in node.SelectNodes("fragment")) {
+//					fragmentName = nodeFragment.Attributes["name"].Value;
+//					XmlNodeList subsetNodes = nodeFragment.SelectNodes("subset");
+//					// Does this fragment have subsets?
+//					if (subsetNodes.Count > 0) {
+//						// Yes, so let's add every subset and its text
+//						foreach (XmlNode nodeSubset in subsetNodes) {
+//							subsetId = nodeSubset.Attributes["lang"].Value;
+//							fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
+//						}
+//					}
+//					else {
+//						// No, so add the fragment's node text
+//						fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
+//					}
+//				}
+//				ProcessRepositoryNodes(node.SelectNodes("page"));
+//			}
+//		}
 
 		/// <summary>
 		/// Adds the fragment specified to the repository, if it doesn't exist yet, otherwise updates the fragment in the repository.

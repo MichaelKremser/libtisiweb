@@ -1,11 +1,11 @@
 using NUnit.Framework;
 using System;
 
-namespace libtisiwebtest
-{
+namespace mkcs.libtisiwebtest {
+
 	[TestFixture()]
-	public class FragmentTests
-	{
+	public class FragmentTests {
+
 		[Test()]
 		public void Fragment_Name() {
 			var fragment = new mkcs.libtisiweb.Fragment();
@@ -29,4 +29,3 @@ namespace libtisiwebtest
 		}
 	}
 }
-

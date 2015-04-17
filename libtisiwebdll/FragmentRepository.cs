@@ -3,7 +3,15 @@ using System.Collections.Generic;
 
 namespace mkcs.libtisiweb {
 
-	public class FragmentRepository : Dictionary<string, IFragment> {
+	public interface IFragmentRepository {
+		void SetFragmentValue(string fragmentName, string fragmentSubset, string fragmentValue);
+		string GetFragmentValue(string fragmentName, string fragmentSubset);
+		string DefaultSubset { get; set; }
+		// Normally inherited from base class of implementing class
+		int Count { get; }
+	}
+
+	public class FragmentRepository : Dictionary<string, IFragment>, IFragmentRepository {
 
 		public FragmentRepository () {
 		}

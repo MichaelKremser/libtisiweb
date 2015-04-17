@@ -2,7 +2,7 @@ using System;
 using mkcs.libtisiweb;
 using NUnit.Framework;
 
-namespace libtisiwebtest {
+namespace mkcs.libtisiwebtest {
 
 	public class FragmentRepositoryTest {
 
@@ -10,7 +10,7 @@ namespace libtisiwebtest {
 			UUT.DefaultSubset = "en";
 		}
 
-		private FragmentRepository UUT = new FragmentRepository();
+		private IFragmentRepository UUT = new FragmentRepository();
 
 		[Test()]
 		public void T1_SetFragmentValue() {
