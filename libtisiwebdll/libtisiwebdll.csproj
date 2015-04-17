@@ -43,6 +43,7 @@
     <Compile Include="TisiHttpApplication.cs" />
     <Compile Include="Fragment.cs" />
     <Compile Include="FragmentSubsets.cs" />
+    <Compile Include="FragmentRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

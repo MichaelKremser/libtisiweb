@@ -21,7 +21,8 @@ namespace mkcs.libtisiweb {
 			DefaultSubset = "";
 		}
 		
-		protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
+		//protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
+		protected FragmentRepository fragmentRepository = new FragmentRepository();
 		protected string subset, pageTitle, pageShortTitle, pageLongTitle;
 
 		private string _FragmentRepositoryXmlFile;
@@ -79,12 +80,12 @@ namespace mkcs.libtisiweb {
 						// Yes, so let's add every subset and its text
 						foreach (XmlNode nodeSubset in subsetNodes) {
 							subsetId = nodeSubset.Attributes["lang"].Value;
-							SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
+							fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
 						}
 					}
 					else {
 						// No, so add the fragment's node text
-						SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
+						fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
 					}
 				}
 				ProcessRepositoryNodes(node.SelectNodes("page"));
@@ -96,79 +97,28 @@ namespace mkcs.libtisiweb {
 		/// </summary>
 		/// <returns><c>true</c>, if fragment was added, <c>false</c> if fragment was updated.</returns>
 		/// <param name="fragment">The fragment that should be added or updated.</param>
-		protected bool AddFragment(IFragment fragment) {
-			if (fragmentRepository.ContainsKey(fragment.Name)) {
-				fragmentRepository[fragment.Name] = fragment;
-				Trace.WriteLine("AddFragment: Updated " + fragment.Name);
-				return false;
-			}
-			else {
-				fragmentRepository.Add(fragment.Name, fragment);
-				Trace.WriteLine("AddFragment: Inserted " + fragment.Name);
-				return true;
-			}
-		}
+//		protected bool AddFragment(IFragment fragment) {
+//			if (fragmentRepository.ContainsKey(fragment.Name)) {
+//				fragmentRepository[fragment.Name] = fragment;
+//				Trace.WriteLine("AddFragment: Updated " + fragment.Name);
+//				return false;
+//			}
+//			else {
+//				fragmentRepository.Add(fragment.Name, fragment);
+//				Trace.WriteLine("AddFragment: Inserted " + fragment.Name);
+//				return true;
+//			}
+//		}
 
 		protected override void Initialize (System.Web.Routing.RequestContext requestContext) {
 			base.Initialize (requestContext);
 			subset = GetSubsetId();
 			var action = GetURIParameter("action");
-			pageTitle = GetFragmentValue(action + ".title", subset);
-			pageShortTitle = GetFragmentValue(action + ".shorttitle", subset);
-			pageLongTitle = GetFragmentValue(action + ".longtitle", subset);
+			pageTitle = fragmentRepository.GetFragmentValue(action + ".title", subset);
+			pageShortTitle = fragmentRepository.GetFragmentValue(action + ".shorttitle", subset);
+			pageLongTitle = fragmentRepository.GetFragmentValue(action + ".longtitle", subset);
 		}
 
-		public void SetFragmentValue(string fragmentName, string fragmentSubset, string fragmentValue) {
-			IFragment fragment;
-			if (fragmentRepository.ContainsKey(fragmentName)) {
-				fragment = fragmentRepository[fragmentName];
-			}
-			else {
-				fragment = new Fragment();
-				fragmentRepository.Add(fragmentName, fragment);
-			}
-			if (fragment.ContainsSubset(fragmentSubset)) {
-				fragment.Subsets[fragmentSubset] = fragmentValue;
-			}
-			else {
-				fragment.AddSubset(fragmentSubset, fragmentValue);
-			}
-		}
-
-		public string GetFragmentValue(string fragmentName, string fragmentSubset) {
-			// Is the requested fragment available?
-			if (fragmentRepository.ContainsKey(fragmentName)) {
-				IFragment fragment = fragmentRepository[fragmentName];
-				// Check if the fragment contains any subset rather then the "undefined" subset at all
-				if (fragment.ContainsSubset("")) {
-					// No, it doesn't, so reset the requested subset to an empty string
-					fragmentSubset = "";
-				}
-				else {
-					// Yes, it does, so try to find an appropriate subset
-					// If the requested subset is for instance "en-us", but that's not available, try with "en" only
-					if (!fragment.ContainsSubset(fragmentSubset) && fragmentSubset.IndexOf("-") > 0) {
-						fragmentSubset = fragmentSubset.Substring(0, fragmentSubset.IndexOf("-"));
-					}
-					// If the requested subset is not available, fall back to default subset
-					if (!fragment.ContainsSubset(fragmentSubset)) {
-						fragmentSubset = DefaultSubset;
-					}
-				}
-				// Return the requested subset if availble
-				if (fragment.ContainsSubset(fragmentSubset)) {
-					return fragment.Subsets[fragmentSubset];
-				}
-				else {
-					// Otherwise return a magic string that signalises a problem
-					return "#SUBSET_NOT_FOUND("+ fragmentName + "," + fragmentSubset + ")";
-				}
-			}
-			else {
-				// Requested fragment is not available, so return a magic string that signalises a problem
-				return "#FRAGMENT_NOT_FOUND(" + fragmentName + ")";
-			}
-		}
 	}
 }
 

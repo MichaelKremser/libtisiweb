@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 
+/*
+ * 20150417: put to seperate file
+*/
+
 namespace mkcs.libtisiweb
 {
 	public class FragmentSubsets : Dictionary<string, string>
