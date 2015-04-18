@@ -49,6 +49,19 @@ namespace mkcs.libtisiweb {
 			}
 		}
 
+		public string PageTitle { get { return pageTitle; } }
+		public string PageShortTitle { get { return pageShortTitle; } }
+		public string PageLongTitle { get { return pageLongTitle; } }
+
+		public IFragmentRepository FragmentRepository {
+			get {
+				return this.fragmentRepository;
+			}
+			set {
+				this.fragmentRepository = value;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the default subset that is used in case the desired subset is not available for a given fragment.
 		/// </summary>
@@ -62,12 +75,6 @@ namespace mkcs.libtisiweb {
 		public string GetSubsetId() {
 			return GetURIParameter("subset");
 		}
-
-		/// <summary>
-		/// Adds the fragment specified to the repository, if it doesn't exist yet, otherwise updates the fragment in the repository.
-		/// </summary>
-		/// <returns><c>true</c>, if fragment was added, <c>false</c> if fragment was updated.</returns>
-		/// <param name="fragment">The fragment that should be added or updated.</param>
 
 		protected override void Initialize (System.Web.Routing.RequestContext requestContext) {
 			base.Initialize (requestContext);

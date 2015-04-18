@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace mkcs.libtisiweb {
 
-	public interface IFragmentRepository {
+	public interface IFragmentRepository : IDictionary<string, IFragment> {
 		void SetFragmentValue(string fragmentName, string fragmentSubset, string fragmentValue);
 		string GetFragmentValue(string fragmentName, string fragmentSubset);
 		string DefaultSubset { get; set; }
 		// Normally inherited from base class of implementing class
-		int Count { get; }
+		//int Count { get; }
 	}
 
 	public class FragmentRepository : Dictionary<string, IFragment>, IFragmentRepository {
@@ -17,6 +17,10 @@ namespace mkcs.libtisiweb {
 		}
 
 		public string DefaultSubset { get; set; } // Normally, this property is set in TisiController (see property with same name there)
+
+//		public void AddFragment(string fragmentName, IFragment fragmentInstance) {
+//			this.Add(fragmentName, fragmentInstance);
+//		}
 
 		public void SetFragmentValue(string fragmentName, string fragmentSubset, string fragmentValue) {
 			IFragment fragment;
