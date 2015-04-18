@@ -65,12 +65,12 @@ namespace mkcs.libtisiweb {
 				}
 				else {
 					// Otherwise return a magic string that signalises a problem
-					return "#SUBSET_NOT_FOUND("+ fragmentName + "," + fragmentSubset + ")";
+					return "#SUBSET_NOT_FOUND('"+ fragmentName + "','" + fragmentSubset + "')";
 				}
 			}
 			else {
 				// Requested fragment is not available, so return a magic string that signalises a problem
-				return "#FRAGMENT_NOT_FOUND(" + fragmentName + ")";
+				return "#FRAGMENT_NOT_FOUND('" + fragmentName + "')";
 			}
 		}
 	}

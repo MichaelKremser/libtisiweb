@@ -18,7 +18,7 @@ namespace mkcs.libtisiweb {
 	*/
 	public abstract class TisiController : Controller {
 		public TisiController () {
-			fragmentRepository.DefaultSubset = DefaultSubset = "";
+			DefaultSubset = "";
 		}
 		
 		//protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
@@ -66,7 +66,14 @@ namespace mkcs.libtisiweb {
 		/// Gets or sets the default subset that is used in case the desired subset is not available for a given fragment.
 		/// </summary>
 		/// <value>The default subset.</value>
-		public string DefaultSubset { get; set; }
+		public string DefaultSubset {
+			get {
+				return fragmentRepository.DefaultSubset;
+			}
+			set {
+				fragmentRepository.DefaultSubset = value;
+			}
+		}
 		
 		public string GetURIParameter(string parameter) {
 			return this.ControllerContext.RouteData.GetRequiredString(parameter);
