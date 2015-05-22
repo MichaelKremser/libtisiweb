@@ -46,6 +46,7 @@
     <Compile Include="FragmentRepository.cs" />
     <Compile Include="IFragmentRepositoryReader.cs" />
     <Compile Include="XmlFragmentRepositoryReader.cs" />
+    <Compile Include="Xml.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

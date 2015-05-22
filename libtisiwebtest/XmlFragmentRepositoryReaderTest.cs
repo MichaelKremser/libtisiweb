@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using NUnit.Framework;
 using mkcs.libtisiweb;
+using System.Diagnostics;
 
 namespace mkcs.libtisiwebtest {
 
@@ -24,6 +25,23 @@ namespace mkcs.libtisiwebtest {
 		public void T2_TestGetFragmentValueWithoutSubset() {
 			string fragmentValue = _FragmentRepository.GetFragmentValue("start.title", "en");
 			Assert.AreEqual("Start", fragmentValue);
+		}
+
+		[Test()]
+		public void T3_TestReadXmlRepositoryFromFile() {
+			var doc = new XmlDocument();
+			doc.Load("/media/Daten1/Files/Great/Web/tobias-jana.mkcs.at/data/baby2008.xml");
+			UUT.ReadFragmentRepository(doc, _FragmentRepository);
+		}
+		
+		[Test()]
+		public void T4_TestGetFragmentValueFromFile_1() {
+			string fragmentValue = _FragmentRepository.GetFragmentValue("welcome.title", "en");
+			Assert.AreEqual("Welcome", fragmentValue);
+			fragmentValue = _FragmentRepository.GetFragmentValue("welcome.title", "de");
+			Assert.AreEqual("Willkommen", fragmentValue);
+			fragmentValue = _FragmentRepository.GetFragmentValue("welcome.title", "ru");
+			Assert.AreEqual("Добро пожаловать", fragmentValue);
 		}
 	}
 }
