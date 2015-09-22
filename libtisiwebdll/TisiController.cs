@@ -23,7 +23,7 @@ namespace mkcs.libtisiweb {
 		
 		//protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
 		protected IFragmentRepository fragmentRepository = new FragmentRepository();
-		protected string subset, pageTitle, pageShortTitle, pageLongTitle;
+		protected string subset, action, pageTitle, pageShortTitle, pageLongTitle;
 
 		private string _FragmentRepositoryXmlFile;
 		/// <summary>
@@ -63,7 +63,7 @@ namespace mkcs.libtisiweb {
 		}
 
 		/// <summary>
-		/// Gets or sets the default subset that is used in case the desired subset is not available for a given fragment.
+		/// Gets or sets the default subset that is used in case the desired subset is not available for a fragment given.
 		/// </summary>
 		/// <value>The default subset.</value>
 		public string DefaultSubset {
@@ -83,13 +83,20 @@ namespace mkcs.libtisiweb {
 			return GetURIParameter("subset");
 		}
 
+		public string GetAction() {
+			return GetURIParameter("action");
+		}
+
 		protected override void Initialize (System.Web.Routing.RequestContext requestContext) {
 			base.Initialize (requestContext);
 			subset = GetSubsetId();
-			var action = GetURIParameter("action");
+			action = GetAction();
 			pageTitle = fragmentRepository.GetFragmentValue(action + ".title", subset);
 			pageShortTitle = fragmentRepository.GetFragmentValue(action + ".shorttitle", subset);
 			pageLongTitle = fragmentRepository.GetFragmentValue(action + ".longtitle", subset);
+			ViewData["subset"] = subset;
+			ViewData["action"] = action;
+			ViewData["FragmentRepository"] = fragmentRepository;
 		}
 
 	}
