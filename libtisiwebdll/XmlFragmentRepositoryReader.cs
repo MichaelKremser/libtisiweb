@@ -2,6 +2,14 @@ using System;
 using System.Xml;
 using System.Diagnostics;
 
+/*
+ * *ti*ny *si*mple web management system
+ * (C) Michael Kremser, 2003-2015
+ * 
+ * This is free software.
+ * License: MIT
+*/
+
 namespace mkcs.libtisiweb {
 
 	public class XmlFragmentRepositoryReader : IFragmentRepositoryReader<XmlDocument> {

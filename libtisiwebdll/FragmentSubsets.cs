@@ -2,6 +2,14 @@ using System;
 using System.Collections.Generic;
 
 /*
+ * *ti*ny *si*mple web management system
+ * (C) Michael Kremser, 2003-2015
+ * 
+ * This is free software.
+ * License: MIT
+*/
+
+/*
  * 20150417: put to seperate file
 */
 
