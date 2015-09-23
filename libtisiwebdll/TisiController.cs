@@ -23,7 +23,7 @@ namespace mkcs.libtisiweb {
 		
 		//protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
 		protected IFragmentRepository fragmentRepository = new FragmentRepository();
-		protected string subset, action, pageTitle, pageShortTitle, pageLongTitle;
+		protected string subset, action, actionID, pageTitle, pageShortTitle, pageLongTitle;
 
 		private string _FragmentRepositoryXmlFile;
 		/// <summary>
@@ -76,7 +76,13 @@ namespace mkcs.libtisiweb {
 		}
 		
 		public string GetURIParameter(string parameter) {
-			return this.ControllerContext.RouteData.GetRequiredString(parameter);
+			var routeData = this.ControllerContext.RouteData;
+			if (routeData.Values.ContainsKey(parameter)) {
+				return routeData.GetRequiredString(parameter);
+			}
+			else {
+				return "";
+			}
 		}
 
 		public string GetSubsetId() {
@@ -86,16 +92,22 @@ namespace mkcs.libtisiweb {
 		public string GetAction() {
 			return GetURIParameter("action");
 		}
+		
+		public string GetActionID() {
+			return GetURIParameter("id");
+		}
 
 		protected override void Initialize (System.Web.Routing.RequestContext requestContext) {
 			base.Initialize (requestContext);
 			subset = GetSubsetId();
 			action = GetAction();
+			actionID = GetActionID();
 			pageTitle = fragmentRepository.GetFragmentValue(action + ".title", subset);
 			pageShortTitle = fragmentRepository.GetFragmentValue(action + ".shorttitle", subset);
 			pageLongTitle = fragmentRepository.GetFragmentValue(action + ".longtitle", subset);
 			ViewData["subset"] = subset;
 			ViewData["action"] = action;
+			ViewData["actionID"] = actionID;
 			ViewData["FragmentRepository"] = fragmentRepository;
 		}
 
