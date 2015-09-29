@@ -21,8 +21,6 @@ namespace mkcs.libtisiweb {
 			DefaultSubset = "";
 		}
 		
-		//protected Dictionary<string, IFragment> fragmentRepository = new Dictionary<string, IFragment>();
-		protected IFragmentRepository fragmentRepository = new FragmentRepository();
 		protected string subset, action, actionID, pageTitle, pageShortTitle, pageLongTitle;
 
 		private string _FragmentRepositoryXmlFile;
@@ -38,7 +36,6 @@ namespace mkcs.libtisiweb {
 				if (!string.IsNullOrEmpty(value) && System.IO.File.Exists(value)) {
 					var doc = new XmlDocument();
 					doc.Load(value);
-					//ReadXmlRepository(doc);
 					var xmlFileReader = new XmlFragmentRepositoryReader();
 					xmlFileReader.ReadFragmentRepository(doc, fragmentRepository);
 					_FragmentRepositoryXmlFile = value;
@@ -49,10 +46,7 @@ namespace mkcs.libtisiweb {
 			}
 		}
 
-		public string PageTitle { get { return pageTitle; } }
-		public string PageShortTitle { get { return pageShortTitle; } }
-		public string PageLongTitle { get { return pageLongTitle; } }
-
+		protected IFragmentRepository fragmentRepository = new FragmentRepository();
 		public IFragmentRepository FragmentRepository {
 			get {
 				return this.fragmentRepository;
@@ -74,7 +68,11 @@ namespace mkcs.libtisiweb {
 				fragmentRepository.DefaultSubset = value;
 			}
 		}
-		
+
+		public string PageTitle { get { return pageTitle; } }
+		public string PageShortTitle { get { return pageShortTitle; } }
+		public string PageLongTitle { get { return pageLongTitle; } }
+
 		public string GetURIParameter(string parameter) {
 			var routeData = this.ControllerContext.RouteData;
 			if (routeData.Values.ContainsKey(parameter)) {
@@ -102,15 +100,20 @@ namespace mkcs.libtisiweb {
 			subset = GetSubsetId();
 			action = GetAction();
 			actionID = GetActionID();
-			pageTitle = fragmentRepository.GetFragmentValue(action + ".title", subset);
-			pageShortTitle = fragmentRepository.GetFragmentValue(action + ".shorttitle", subset);
-			pageLongTitle = fragmentRepository.GetFragmentValue(action + ".longtitle", subset);
 			ViewData["subset"] = subset;
 			ViewData["action"] = action;
 			ViewData["actionID"] = actionID;
 			ViewData["FragmentRepository"] = fragmentRepository;
 		}
 
+		protected void ReadBasicFragments() {
+			pageTitle = fragmentRepository.GetFragmentValue(action + ".title", subset);
+			pageShortTitle = fragmentRepository.GetFragmentValue(action + ".shorttitle", subset);
+			pageLongTitle = fragmentRepository.GetFragmentValue(action + ".longtitle", subset);
+			ViewData ["PageTitle"] = pageTitle;
+			ViewData ["PageShortTitle"] = pageTitle;
+			ViewData ["PageLongTitle"] = pageTitle;
+		}
 	}
 }
 
