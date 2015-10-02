@@ -59,7 +59,7 @@ namespace mkcs.libtisiweb {
 				throw new ArgumentNullException("node");
 			if (fragmentRepository == null)
 				throw new ArgumentNullException("fragmentRepository");
-			pageName = Xml.GetAttributeValueDefensive(node, "name");
+			string pageName = Xml.GetAttributeValueDefensive(node, "name");
 			if (pageName.Length == 0) {
 				Console.WriteLine ("\tSkipping unnamed page");
 			}
