@@ -33,35 +33,66 @@ namespace mkcs.libtisiweb {
 		}
 
 		public void ProcessRepositoryNodes(XmlNodeList nodes, IFragmentRepository fragmentRepository) {
+			if (fragmentRepository == null)
+				throw new ArgumentNullException("fragmentRepository");
 			if (nodes == null || nodes.Count == 0)
 				return;
 			Console.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
 			string pageName = "", fragmentName = "";
 			foreach (XmlNode node in nodes) {
-				pageName = Xml.GetAttributeValueDefensive(node, "name"); // node.Attributes["name"].Value;
-				if (pageName.Length == 0) {
-					Console.WriteLine("\tSkipping unnamed page");
-				}
-				else {
-					Console.WriteLine("\tProcessing page node '" + pageName + "'");
-					foreach (XmlNode nodeFragment in node.SelectNodes(FragmentNodeName)) {
-						fragmentName = Xml.GetAttributeValueDefensive(nodeFragment, "name"); // nodeFragment.Attributes["name"].Value;
-						if (fragmentName.Length == 0) {
-							Console.WriteLine("\tSkipping unnamed fragment");
-						}
-						else {
-							Console.WriteLine("\tProcessing fragment node '" + fragmentName + "'");
-							ProcessFragmentNode(fragmentRepository, pageName, fragmentName, nodeFragment, SubsetNodeName);
-						}
-					}
-					ProcessRepositoryNodes(node.SelectNodes(PageNodeName), fragmentRepository);
-				}
+				ProcessPageNode(node, fragmentRepository);
 			}
 			Console.WriteLine("ProcessRepositoryNodes exit");
 		}
 
-		public void ProcessFragmentNode(IFragmentRepository fragmentRepository, string pageName, string fragmentName, XmlNode nodeFragment, string SubsetNodeName)
-		{
+		/// <summary>
+		/// Processes a "page" node that has "fragment" child nodes.
+		/// </summary>
+		/// <param name="node">The XML node that should be processed. Must not be null.</param>
+		/// <param name="fragmentRepository">The fragment repository where the information observed is written to. Must not be null.</param>
+		/// <description>
+		/// Iterates through all children of the node given that have a name like the contents of
+		/// property "FragmentNodeName" (by default "fragment") and processes them.
+		/// </description>
+		public void ProcessPageNode(XmlNode node, IFragmentRepository fragmentRepository) {
+			if (node == null)
+				throw new ArgumentNullException("node");
+			if (fragmentRepository == null)
+				throw new ArgumentNullException("fragmentRepository");
+			pageName = Xml.GetAttributeValueDefensive(node, "name");
+			if (pageName.Length == 0) {
+				Console.WriteLine ("\tSkipping unnamed page");
+			}
+			else {
+				Console.WriteLine ("\tProcessing page node '" + pageName + "'");
+				foreach (XmlNode nodeFragment in node.SelectNodes (FragmentNodeName)) {
+					string fragmentName = Xml.GetAttributeValueDefensive (nodeFragment, "name");
+					if (fragmentName.Length == 0) {
+						Console.WriteLine ("\tSkipping unnamed fragment");
+					}
+					else {
+						Console.WriteLine ("\tProcessing fragment node '" + fragmentName + "'");
+						ProcessFragmentNode (pageName, fragmentName, nodeFragment, fragmentRepository);
+					}
+				}
+				ProcessRepositoryNodes (node.SelectNodes (PageNodeName), fragmentRepository);
+			}
+		}
+
+		/// <summary>
+		/// Processes a "fragment" node that has either text or "subset" child nodes.
+		/// </summary>
+		/// <param name="pageName">The name of the page that is processed. This is used as a part of the fragment's name for the repository.</param>
+		/// <param name="fragmentName">The name of the fragment.</param>
+		/// <param name="nodeFragment">The XML node "fragment".</param>
+		/// <param name="fragmentRepository">The fragment repository where the information observed is written to. Must not be null.</param>
+		public void ProcessFragmentNode(string pageName, string fragmentName, XmlNode nodeFragment, IFragmentRepository fragmentRepository) {
+			if (string.IsNullOrEmpty(fragmentName))
+				throw new ArgumentNullException("fragmentName");
+			if (nodeFragment == null)
+				throw new ArgumentNullException("nodeFragment");
+			if (fragmentRepository == null)
+				throw new ArgumentNullException("fragmentRepository");
 			XmlNodeList subsetNodes = nodeFragment.SelectNodes(SubsetNodeName);
 			string subsetId = "";
 			// Does this fragment have subsets?
@@ -76,13 +107,13 @@ namespace mkcs.libtisiweb {
 						Console.WriteLine ("\tNot adding subset without name");
 					}
 					else {
-						fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
+						fragmentRepository.SetFragmentValue((pageName == null ? "" : pageName) + "." + fragmentName, subsetId, nodeSubset.InnerText);
 					}
 				}
 			}
 			else {
 				// No, so add the fragment's node text
-				fragmentRepository.SetFragmentValue (pageName + "." + fragmentName, "", nodeFragment.InnerText);
+				fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
 			}
 		}
 	}
