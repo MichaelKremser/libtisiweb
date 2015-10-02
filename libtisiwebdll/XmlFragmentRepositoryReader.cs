@@ -36,7 +36,7 @@ namespace mkcs.libtisiweb {
 			if (nodes == null || nodes.Count == 0)
 				return;
 			Console.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
-			string pageName = "", fragmentName = "", subsetId = "";
+			string pageName = "", fragmentName = "";
 			foreach (XmlNode node in nodes) {
 				pageName = Xml.GetAttributeValueDefensive(node, "name"); // node.Attributes["name"].Value;
 				if (pageName.Length == 0) {
@@ -51,26 +51,7 @@ namespace mkcs.libtisiweb {
 						}
 						else {
 							Console.WriteLine("\tProcessing fragment node '" + fragmentName + "'");
-							XmlNodeList subsetNodes = nodeFragment.SelectNodes(SubsetNodeName);
-							// Does this fragment have subsets?
-							if (subsetNodes.Count > 0) {
-								int subsetNodePtr = 0;
-								// Yes, so let's add every subset and its text
-								foreach (XmlNode nodeSubset in subsetNodes) {
-									Console.WriteLine("\tProcessing subset node #'" + (++subsetNodePtr).ToString() + "'");
-									subsetId = Xml.GetAttributeValueDefensive(nodeSubset, SubsetNameAttribute); // nodeSubset.Attributes[SubsetNameAttribute].Value;
-									if (subsetId.Length == 0) {
-										Console.WriteLine("\tNot adding subset without name");
-									}
-									else {
-										fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
-									}
-								}
-							}
-							else {
-								// No, so add the fragment's node text
-								fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, "", nodeFragment.InnerText);
-							}
+							ProcessFragmentNode(fragmentRepository, pageName, fragmentName, nodeFragment, SubsetNodeName);
 						}
 					}
 					ProcessRepositoryNodes(node.SelectNodes(PageNodeName), fragmentRepository);
@@ -79,6 +60,31 @@ namespace mkcs.libtisiweb {
 			Console.WriteLine("ProcessRepositoryNodes exit");
 		}
 
+		public void ProcessFragmentNode(IFragmentRepository fragmentRepository, string pageName, string fragmentName, XmlNode nodeFragment, string SubsetNodeName)
+		{
+			XmlNodeList subsetNodes = nodeFragment.SelectNodes(SubsetNodeName);
+			string subsetId = "";
+			// Does this fragment have subsets?
+			if (subsetNodes.Count > 0) {
+				int subsetNodePtr = 0;
+				// Yes, so let's add every subset and its text
+				foreach (XmlNode nodeSubset in subsetNodes) {
+					Console.WriteLine ("\tProcessing subset node #'" + (++subsetNodePtr).ToString () + "'");
+					subsetId = Xml.GetAttributeValueDefensive (nodeSubset, SubsetNameAttribute);
+					// nodeSubset.Attributes[SubsetNameAttribute].Value;
+					if (subsetId.Length == 0) {
+						Console.WriteLine ("\tNot adding subset without name");
+					}
+					else {
+						fragmentRepository.SetFragmentValue(pageName + "." + fragmentName, subsetId, nodeSubset.InnerText);
+					}
+				}
+			}
+			else {
+				// No, so add the fragment's node text
+				fragmentRepository.SetFragmentValue (pageName + "." + fragmentName, "", nodeFragment.InnerText);
+			}
+		}
 	}
 }
 
