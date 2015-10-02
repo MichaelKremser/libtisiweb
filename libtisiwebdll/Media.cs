@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace libtisiwebdll {
+namespace mkcs.libtisiweb {
 
 	/// <summary>
 	/// Represents information about media like a picture, a video, an audio file or the like.
@@ -25,6 +25,7 @@ namespace libtisiwebdll {
 		public string Device { get; set; }
 		public string CustomData { get; set; }
 		public List<string> Tags { get; set; }
+		public IFragment Description { get; set; }
 	}
 }
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace libtisiwebdll {
+namespace mkcs.libtisiweb {
 
 	public enum MediaType {
 		Unknown = 0,
