@@ -48,6 +48,8 @@
     <Compile Include="XmlFragmentRepositoryReader.cs" />
     <Compile Include="Xml.cs" />
     <Compile Include="Category.cs" />
+    <Compile Include="Media.cs" />
+    <Compile Include="MediaType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
