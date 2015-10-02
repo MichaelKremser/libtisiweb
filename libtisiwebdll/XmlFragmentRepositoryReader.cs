@@ -38,7 +38,6 @@ namespace mkcs.libtisiweb {
 			if (nodes == null || nodes.Count == 0)
 				return;
 			Console.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
-			string pageName = "", fragmentName = "";
 			foreach (XmlNode node in nodes) {
 				ProcessPageNode(node, fragmentRepository);
 			}
