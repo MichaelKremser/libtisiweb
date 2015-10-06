@@ -13,7 +13,7 @@ using System.Diagnostics;
 namespace mkcs.libtisiweb {
 
 	/// <summary>
-	/// Class for reading fragment repositories in XML format and saving them to a fragment store.
+	/// Class for reading fragment repositories in XML format and saving them to an instance of IFragmentRepository.
 	/// </summary>
 	public class XmlFragmentRepositoryReader : IFragmentRepositoryReader<XmlDocument> {
 
