@@ -21,9 +21,9 @@ namespace mkcs.libtisiweb {
 		public List<Media> ReadMediaListFromPath(DirectoryInfo Media, DirectoryInfo MediaThumbs, DirectoryInfo MediaMidRes, MediaType MediaTypeToSearchFor) {
 			if (Media == null)
 				throw new ArgumentNullException("Media");
-			if (MediaThumbs == null)
-				throw new ArgumentNullException("MediaThumbs");
-			if (!(MediaTypeToSearchFor != MediaType.Picture) || (MediaTypeToSearchFor != MediaType.Audio) || (MediaTypeToSearchFor != MediaType.Video))
+//			if (MediaThumbs == null)
+//				throw new ArgumentNullException("MediaThumbs");
+			if (!(MediaTypeToSearchFor == MediaType.Picture) || (MediaTypeToSearchFor == MediaType.Audio) || (MediaTypeToSearchFor == MediaType.Video))
 				throw new ArgumentException("The requested media type cannot be searched for.");
 			string[] searchPatterns = null;
 			if (MediaTypeToSearchFor == MediaType.Picture) {
@@ -38,16 +38,19 @@ namespace mkcs.libtisiweb {
 			var mediaList = new List<Media>();
 			Media media;
 			foreach (var searchPattern in searchPatterns) {
-				foreach (FileInfo fileInfo in Media.GetFiles(searchPattern)) {
-					media = new Media();
-					media.Modified = fileInfo.LastWriteTime;
-					media.ID = fileInfo.Name;
-					media.Description = new Fragment();
-					media.Description.Name = fileInfo.Name;
-					media.Description.AddSubset("", "Picture " + fileInfo.Name);
-					mediaList.Add(media);
+				foreach (FileInfo fileInfo in Media.GetFiles()) { // specifing searchPattern in GetFiles causes problems related to case-sensitivity of earnest operating systems
+					if (fileInfo.Name.ToLower().EndsWith(searchPattern)) {
+						media = new Media();
+						media.Modified = fileInfo.LastWriteTime;
+						media.ID = fileInfo.Name;
+						media.Description = new Fragment();
+						media.Description.Name = fileInfo.Name;
+						media.Description.AddSubset("", "Picture " + fileInfo.Name);
+						mediaList.Add(media);
+					}
 				}
 			}
+			mediaList.Sort((x, y) => x.Modified.CompareTo(y.Modified));
 			/*mediaList = (from media in mediaList
 				orderby media.Modified
 				select media).;*/
