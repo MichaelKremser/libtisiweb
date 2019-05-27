@@ -37,10 +37,10 @@ namespace mkcs.libtisiweb {
 
 		public void ProcessRepositoryNodes(XmlNodeList nodes, IFragmentRepository fragmentRepository) {
 			if (fragmentRepository == null)
-				throw new ArgumentNullException("fragmentRepository");
+				throw new ArgumentNullException(nameof(fragmentRepository));
 			if (nodes == null || nodes.Count == 0)
 				return;
-			Console.WriteLine("ProcessRepositoryNodes(" + nodes.Count.ToString() + ")");
+			Console.WriteLine($"ProcessRepositoryNodes({nodes.Count.ToString()})");
 			foreach (XmlNode node in nodes) {
 				ProcessPageNode(node, fragmentRepository);
 			}
@@ -58,9 +58,9 @@ namespace mkcs.libtisiweb {
 		/// </description>
 		public void ProcessPageNode(XmlNode node, IFragmentRepository fragmentRepository) {
 			if (node == null)
-				throw new ArgumentNullException("node");
+				throw new ArgumentNullException(nameof(node));
 			if (fragmentRepository == null)
-				throw new ArgumentNullException("fragmentRepository");
+				throw new ArgumentNullException(nameof(fragmentRepository));
 			string pageName = Xml.GetAttributeValueDefensive(node, "name");
 			if (pageName.Length == 0) {
 				Console.WriteLine ("\tSkipping unnamed page");
@@ -90,11 +90,11 @@ namespace mkcs.libtisiweb {
 		/// <param name="fragmentRepository">The fragment repository where the information observed is written to. Must not be null.</param>
 		public void ProcessFragmentNode(string pageName, string fragmentName, XmlNode nodeFragment, IFragmentRepository fragmentRepository) {
 			if (string.IsNullOrEmpty(fragmentName))
-				throw new ArgumentNullException("fragmentName");
+				throw new ArgumentNullException(nameof(fragmentName));
 			if (nodeFragment == null)
-				throw new ArgumentNullException("nodeFragment");
+				throw new ArgumentNullException(nameof(nodeFragment));
 			if (fragmentRepository == null)
-				throw new ArgumentNullException("fragmentRepository");
+				throw new ArgumentNullException(nameof(fragmentRepository));
 			XmlNodeList subsetNodes = nodeFragment.SelectNodes(SubsetNodeName);
 			string subsetId = "";
 			// Does this fragment have subsets?

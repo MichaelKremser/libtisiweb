@@ -1,4 +1,5 @@
 using System;
+using libtisiwebdll.Factory;
 using mkcs.libtisiweb;
 using NUnit.Framework;
 
@@ -10,7 +11,7 @@ namespace mkcs.libtisiwebtest {
 			UUT.DefaultSubset = "en";
 		}
 
-		private IFragmentRepository UUT = new FragmentRepository();
+		private IFragmentRepository UUT = new FragmentRepository(DefaultFactory.GetFactory());
 
 		[Test()]
 		public void T1_SetFragmentValue() {

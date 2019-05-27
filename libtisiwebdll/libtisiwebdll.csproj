@@ -70,9 +70,16 @@
     <Compile Include="Media.cs" />
     <Compile Include="MediaType.cs" />
     <Compile Include="MediaReader.cs" />
+    <Compile Include="IFragment.cs" />
+    <Compile Include="IFragmentSubsets.cs" />
+    <Compile Include="Factory\IFactory.cs" />
+    <Compile Include="Factory\DefaultFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Factory\" />
   </ItemGroup>
 </Project>

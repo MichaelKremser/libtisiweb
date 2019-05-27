@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Xml;
+using libtisiwebdll.Factory;
 
 /*
  * *ti*ny *si*mple web management system
@@ -19,9 +20,12 @@ namespace mkcs.libtisiweb {
 	public abstract class TisiController : Controller {
 		public TisiController () {
 			DefaultSubset = "";
-		}
+            factory = DefaultFactory.GetFactory();
+            fragmentRepository = new FragmentRepository(factory);
+        }
 		
-		protected string subset, action, actionID, pageTitle, pageShortTitle, pageLongTitle;
+		private IFactory factory;
+        protected string subset, action, actionID, pageTitle, pageShortTitle, pageLongTitle;
 
 		private string _FragmentRepositoryXmlFile;
 		/// <summary>
@@ -46,7 +50,7 @@ namespace mkcs.libtisiweb {
 			}
 		}
 
-		protected IFragmentRepository fragmentRepository = new FragmentRepository();
+		protected IFragmentRepository fragmentRepository;
 		public IFragmentRepository FragmentRepository {
 			get {
 				return this.fragmentRepository;

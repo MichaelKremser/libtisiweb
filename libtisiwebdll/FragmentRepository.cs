@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using libtisiwebdll.Factory;
 
 /*
  * *ti*ny *si*mple web management system
@@ -21,10 +22,13 @@ namespace mkcs.libtisiweb {
 
 	public class FragmentRepository : Dictionary<string, IFragment>, IFragmentRepository {
 
-		public FragmentRepository () {
+		public FragmentRepository (IFactory factory) {
+            this.factory = factory;
 		}
 
-		public string DefaultSubset { get; set; } // Normally, this property is set in TisiController (see property with same name there)
+        private IFactory factory;
+
+        public string DefaultSubset { get; set; } // Normally, this property is set in TisiController (see property with same name there)
 
 //		public void AddFragment(string fragmentName, IFragment fragmentInstance) {
 //			this.Add(fragmentName, fragmentInstance);
@@ -36,7 +40,7 @@ namespace mkcs.libtisiweb {
 				fragment = this[fragmentName];
 			}
 			else {
-				fragment = new Fragment();
+				fragment = Fragment.CreateFragment(factory);
 				this.Add(fragmentName, fragment);
 			}
 			if (fragment.ContainsSubset(fragmentSubset)) {

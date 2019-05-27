@@ -1,8 +1,8 @@
-using System;
+using libtisiwebdll.Factory;
 
 /*
  * *ti*ny *si*mple web management system
- * (C) Michael Kremser, 2003-2015
+ * (C) Michael Kremser, 2003-2019
  * 
  * This is free software.
  * License: MIT
@@ -10,24 +10,26 @@ using System;
 
 namespace mkcs.libtisiweb
 {
-	public interface IFragment
+	/// <summary>
+    /// A fragment is a particle of a page. It contains subsets which have an identifier.
+    /// A subset defines the result for a condition which is expressed by the identifier. For example, the condition might be a language.
+    /// </summary>
+    public class Fragment : IFragment
 	{
-		string Name { get; set; }
-		FragmentSubsets Subsets { get; set; }
-		void AddSubset (string subset, string value);
-		bool ContainsSubset(string subset);
-	}
-
-	public class Fragment : IFragment
-	{
-		public Fragment()
+		internal Fragment()
 		{
-			Subsets = new FragmentSubsets(this);
 		}
+
+        public static IFragment CreateFragment(IFactory factory)
+        {
+            var fragment = new Fragment();
+            fragment.Subsets = factory.CreateFragmentSubsets(fragment);
+            return fragment;
+        }
 
 		public string Name { get; set; }
 
-		public FragmentSubsets Subsets { get; set; }
+		public IFragmentSubsets Subsets { get; set; }
 
 		public void AddSubset(string subset, string value)
 		{
@@ -41,7 +43,7 @@ namespace mkcs.libtisiweb
 
 		public override string ToString ()
 		{
-			return string.Format("[Fragment: Name={0}, Subsets={1}]", Name, Subsets.Count);
+			return string.Format($"[{nameof(Fragment)}: Name={Name}, Subsets={Subsets.Count}]");
 		}
 	}
 

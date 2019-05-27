@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 /*
  * *ti*ny *si*mple web management system
- * (C) Michael Kremser, 2003-2015
+ * (C) Michael Kremser, 2003-2019
  * 
  * This is free software.
  * License: MIT
@@ -15,8 +15,8 @@ using System.Collections.Generic;
 
 namespace mkcs.libtisiweb
 {
-	public class FragmentSubsets : Dictionary<string, string>
-	{
+	public class FragmentSubsets : Dictionary<string, string>, IFragmentSubsets
+    {
 		public FragmentSubsets() { }
 
 		public FragmentSubsets(IFragment OwningFragment) : this()
@@ -24,7 +24,7 @@ namespace mkcs.libtisiweb
 			this.OwningFragment = OwningFragment;
 		}
 
-		public IFragment OwningFragment { get; private set; }
+		public IFragment OwningFragment { get; set; }
 
 		public override string ToString ()
 		{

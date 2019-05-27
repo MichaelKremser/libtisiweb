@@ -3,6 +3,7 @@ using System.Xml;
 using NUnit.Framework;
 using mkcs.libtisiweb;
 using System.Diagnostics;
+using libtisiwebdll.Factory;
 
 /*
  * *ti*ny *si*mple web management system
@@ -17,14 +18,17 @@ namespace mkcs.libtisiwebtest {
 	public class XmlFragmentRepositoryReaderTest {
 
 		public XmlFragmentRepositoryReaderTest () {
-		}
+            factory = DefaultFactory.GetFactory();
+            _FragmentRepository = new FragmentRepository(factory);
+        }
 
-		private IFragmentRepository _FragmentRepository = new FragmentRepository();
+        private IFactory factory;
+        private IFragmentRepository _FragmentRepository;
 		private IFragmentRepositoryReader<XmlDocument> UUT = new XmlFragmentRepositoryReader();
 
 		[Test()]
 		public void T1_TestReadXmlRepository() {
-			XmlDocument doc = new XmlDocument();
+			var doc = new XmlDocument();
 			doc.LoadXml("<pages><page name=\"start\"><fragment name=\"title\">Start</fragment><fragment name=\"header\"><subset lang=\"en\">This is the start page.</subset><subset lang=\"de\">Das ist die Startseite.</subset></fragment></page></pages>");
 			UUT.ReadFragmentRepository(doc, _FragmentRepository);
 		}
