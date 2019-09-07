@@ -1,13 +1,12 @@
-using System;
+using System.IO;
 using System.Xml;
 using NUnit.Framework;
 using mkcs.libtisiweb;
-using System.Diagnostics;
 using libtisiwebdll.Factory;
 
 /*
  * *ti*ny *si*mple web management system
- * (C) Michael Kremser, 2003-2015
+ * (C) Michael Kremser, 2003-2019
  * 
  * This is free software.
  * License: MIT
@@ -42,9 +41,10 @@ namespace mkcs.libtisiwebtest {
 		[Test()]
 		public void T3_TestReadXmlRepositoryFromFile() {
 			var doc = new XmlDocument();
-			doc.Load("/media/Daten1/Files/Great/Web/tobias-jana.mkcs.at/data/baby2008.xml");
+            var unittestFilePath = Path.Combine(System.Environment.CurrentDirectory, "..", "..", "unittestfile.xml");
+            doc.Load(unittestFilePath);
 			UUT.ReadFragmentRepository(doc, _FragmentRepository);
-		}
+        }
 		
 		[Test()]
 		public void T4_TestGetFragmentValueFromFile_1() {

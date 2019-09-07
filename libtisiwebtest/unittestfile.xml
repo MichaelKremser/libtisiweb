@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<pages>
+  <!-- Page that contains subpages -->
+  <page name="auswahl" file="auswahl.html">
+    <!-- the x before "title" is, that GenerateNavigation does not list this item in the navigation menu -->
+    <fragment name="x_title">Start</fragment>
+    <fragment name="heading">
+      <subset lang="en">Homepage of our 1st child</subset>
+      <subset lang="de">Homepage von unserem 1. Kind</subset>
+      <subset lang="ru">Домашняя страница ???</subset>
+      <subset lang="fr">Homepage de notre prémiere enfant</subset>
+    </fragment>
+    <fragment name="usealtnav">
+      <subset lang="en">Use drop down for navigation</subset>
+      <subset lang="de">Drop-Down-Feld für Navigation verwenden</subset>
+      <subset lang="ru">Используйте прокрутку вниз для передвижения по странице</subset>
+    </fragment>
+    <fragment name="lastupdate">
+      <subset lang="en">Last update</subset>
+      <subset lang="de">Letzte Änderung</subset>
+      <subset lang="ru">Последнее обновление</subset>
+      <subset lang="fr">Dernière actualisation</subset>
+    </fragment>
+    <fragment name="otimizedfor">
+      <subset name="en">These pages are optimized for W3C compatible, CSS2 capable browsers.</subset>
+      <subset name="de">Diese Seiten sind für W3C-kompatible, CSS2-fähige Browser optimiert.</subset>
+      <!-- <subset name="fr">Cette pages sont ??? pour W3C compatible, CSS2 capable browsers.</subset> -->
+    </fragment>
+  </page>
+</pages>

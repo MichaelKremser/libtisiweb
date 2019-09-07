@@ -1,11 +1,11 @@
 using NUnit.Framework;
 using mkcs.libtisiweb;
 using libtisiwebdll.Factory;
-using System;
 
-namespace mkcs.libtisiwebtest {
+namespace mkcs.libtisiwebtest
+{
 
-	[TestFixture()]
+    [TestFixture()]
 	public class FragmentTests {
 
         private IFragment GetTestFragment()

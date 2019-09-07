@@ -4,7 +4,7 @@ using libtisiwebdll.Factory;
 
 /*
  * *ti*ny *si*mple web management system
- * (C) Michael Kremser, 2003-2015
+ * (C) Michael Kremser, 2003-2019
  * 
  * This is free software.
  * License: MIT
